@@ -2,6 +2,37 @@ require("dotenv").config();
 const express = require("express");
 const app = express();
 
+// graphQL practice
+const { ApolloServer, gql } = require("apollo-server");
+
+const animes = [
+  {
+    title: "Inuyasha",
+  },
+  {
+    title: "Gintama",
+  },
+];
+const typeDefs = gql`
+  type Anime {
+    title: String
+  }
+  type Query {
+    test: [Anime]
+  }
+`;
+const resolvers = {
+  Query: {
+    test: () => animes,
+  },
+};
+const server = new ApolloServer({ typeDefs, resolvers });
+server.listen().then(({ url }) => {
+  console.log(`server at ${url}`);
+});
+
+//
+
 const animeRoute = require("./routes/anime");
 
 const mongoose = require("mongoose");
@@ -20,7 +51,7 @@ app.use((req, res, next) => {
 });
 
 //routes
-app.use("/api/anime", animeRoute);
+app.use("/api/animes", animeRoute);
 
 app.listen(process.env.PORT, () => {
   console.log("Backend is running!");
