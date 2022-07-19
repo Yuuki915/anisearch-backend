@@ -1,8 +1,12 @@
 require("dotenv").config();
 const express = require("express");
 const app = express();
+const cors = require("cors");
 
 // graphQL practice
+const { graphqlHTTP } = require("express-graphql");
+const schema = require("./schema/schema");
+
 const { ApolloServer, gql } = require("apollo-server");
 
 const animes = [
@@ -50,11 +54,15 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use(cors());
+
 //routes
 app.use("/api/animes", animeRoute);
 
+app.use("/graphql", graphqlHTTP({ schema, graphiql: true }));
+
 app.listen(process.env.PORT, () => {
-  console.log("Backend is running!");
+  console.log(`Backend is running on ${process.env.PORT}!`);
 });
 
 //
